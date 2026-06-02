@@ -1,0 +1,439 @@
+{
+  "name": "AI Research paper explainer agent",
+  "nodes": [
+    {
+      "parameters": {
+        "fileSelector": "C:\\Users\\sdgup\\.n8n-files\\vanshika.pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -1296,
+        -368
+      ],
+      "id": "e3fbb482-b67d-4b64-a1e7-4d357096d676",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "C:\\Users\\sdgup\\.n8n-files\\research_report.txt",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        528,
+        -368
+      ],
+      "id": "39f7163f-7ccd-4c0b-bbe1-eaab5bb0979f",
+      "name": "Read/Write Files from Disk1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -576,
+        160
+      ],
+      "id": "0aac0d04-237c-42cf-a7e7-d30c87366954",
+      "name": "Gemini Research agent",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "qwUWBO9y4FfqSPEZ",
+          "name": "Google Gemini(PaLM) Api account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -1168,
+        -480
+      ],
+      "id": "5d7c2c24-d5e7-4c81-a23f-ee6ae1b2dda8",
+      "name": "Extract from File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an expert research assistant.\n\nAnalyze the following research paper.\n\nIMPORTANT:\n- Put TWO blank lines between every section.\n- Use proper markdown headings.\n- Use bullet points wherever possible.\n- Keep each section concise and readable.\n\nFormat your response exactly like this:\n\n# Executive Summary\n\n[summary]\n\n\n# Problem Statement\n\n[problem statement]\n\n\n# Objective\n\n[objective]\n\n\n# Methodology\n\n- Point 1\n- Point 2\n- Point 3\n\n\n# Datasets Used\n\n- Dataset 1\n- Dataset 2\n\n\n# Key Findings\n\n- Finding 1\n- Finding 2\n- Finding 3\n\n\n# Limitations\n\n- Limitation 1\n- Limitation 2\n\n\n# Future Work\n\n- Future work 1\n- Future work 2\n\n\n# 10 Interview Questions\n\n1. Question 1\n\n2. Question 2\n\n3. Question 3\n\n...\n\nResearch Paper:\n\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -592,
+        -384
+      ],
+      "id": "1a5d9320-908e-4b60-bd2e-a4aa4f6476b5",
+      "name": "Research summarizer agent"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a research methodology expert.\n\nAnalyze this paper and provide:\n\n# Methodology\n\n# Research Design\n\n# Data Collection Method\n\n# Statistical Techniques\n\n# Limitations of Methodology\n\nResearch Paper:\n\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -800,
+        -272
+      ],
+      "id": "f38ab8a4-dc5a-41fe-8700-c8a3c71e8b87",
+      "name": "Methodology annalyzer"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Generate:\n\n# 15 Technical Interview Questions\n\n# 5 Viva Questions\n\n# 5 Research Discussion Questions\n\nResearch Paper:\n\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -352,
+        -496
+      ],
+      "id": "78ec2a92-9303-4eea-aea6-5b0cc6018d1b",
+      "name": "Interview Question Generator"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a research scientist.\n\nGenerate:\n\n# Future Research Directions\n\n# Novel Project Ideas\n\n# Improvements to this Study\n\nResearch Paper:\n\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1008,
+        -112
+      ],
+      "id": "5767a6f6-48e3-4c84-b8b5-eb47fdc28682",
+      "name": "Future Research Agent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -112,
+        -256
+      ],
+      "id": "6e6c4630-84fb-4415-ae32-4d18bc7246a2",
+      "name": "Merge"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1456,
+        -464
+      ],
+      "id": "b469f62d-4672-4921-8901-92d1c586e652",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        -144,
+        48
+      ],
+      "id": "2b06da00-a82b-4538-baf5-4edddd6eebc1",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        48,
+        -112
+      ],
+      "id": "ba019ffc-3485-480c-affd-9b9b24ba1259",
+      "name": "Merge2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Extract:\n\n# Datasets Used\n\n# Variables\n\n# Sample Size\n\n# Data Sources\n\nResearch Paper:\n\n{{ $json.text }}",
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -1056,
+        64
+      ],
+      "id": "105adb4f-7302-48c6-84ca-d4a9168d9bff",
+      "name": "Dataset Extracter Agent"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "a154cd87-f757-432a-a636-8fb2b09ccfe7",
+      "name": "Merge3"
+    },
+    {
+      "parameters": {
+        "jsCode": "const report = `\n========================================\nAI RESEARCH INTELLIGENCE REPORT\n========================================\n\n${$json.text}\n\n========================================\nGenerated using n8n + Gemini AI\n========================================\n`;\n\nreturn [\n  {\n    binary: {\n      data: await this.helpers.prepareBinaryData(\n        Buffer.from(report),\n        'research_report.txt'\n      )\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -96
+      ],
+      "id": "b88470b3-4a40-4f4b-af9f-fb86e1c5dcd2",
+      "name": "Code in JavaScript"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gemini Research agent": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Research summarizer agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Methodology annalyzer",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Interview Question Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Future Research Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "Dataset Extracter Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Research summarizer agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Methodology annalyzer",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Interview Question Generator",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Future Research Agent",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dataset Extracter Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Research summarizer agent": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Methodology annalyzer": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Interview Question Generator": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Future Research Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "Merge2",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge2": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dataset Extracter Agent": {
+      "main": [
+        [
+          {
+            "node": "Merge3",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Merge3": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "47ed1291-7f87-4f09-9bb7-2e53cbcacbc9",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1762eb3f163ae4d1286a87994eca6ddcce15f5a07a4071ab6cde7fcaa6711614"
+  },
+  "id": "ivXSx8dlMozZHYFS",
+  "tags": []
+}
